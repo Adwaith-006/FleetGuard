@@ -1,254 +1,124 @@
 import cv2
-import mediapipe as mp
-import pygame
-import math
-import time
-from ultralytics import YOLO
-pygame.mixer.init()
-pygame.mixer.music.load("alarm.mp3")
-
-model = YOLO("yolov8n.pt")
-mp_face_mesh = mp.solutions.face_mesh
-
-face_mesh = mp_face_mesh.FaceMesh(
-    max_num_faces=1,
-    refine_landmarks=True
-)
-cap = cv2.VideoCapture(0)
-LEFT_EYE = [33, 160, 158, 133, 153, 144]
-RIGHT_EYE = [362, 385, 387, 263, 373, 380]
-UPPER_LIP = 13
-LOWER_LIP = 14
-sleep_start = None
-alarm_on = False
-def euclidean_distance(point1, point2):
-
-    return math.sqrt(
-        (point1[0] - point2[0]) ** 2 +
-        (point1[1] - point2[1]) ** 2
-    )
-
-def eye_aspect_ratio(landmarks, eye_indices, w, h):
-    p1 = landmarks[eye_indices[0]]
-    p2 = landmarks[eye_indices[1]]
-    p3 = landmarks[eye_indices[2]]
-    p4 = landmarks[eye_indices[3]]
-    p5 = landmarks[eye_indices[4]]
-    p6 = landmarks[eye_indices[5]]
-
-    left = (int(p1.x * w), int(p1.y * h))
-    top1 = (int(p2.x * w), int(p2.y * h))
-    top2 = (int(p3.x * w), int(p3.y * h))
-    right = (int(p4.x * w), int(p4.y * h))
-    bottom1 = (int(p5.x * w), int(p5.y * h))
-    bottom2 = (int(p6.x * w), int(p6.y * h))
-
-    horizontal = euclidean_distance(left, right)
-
-    vertical = (
-        euclidean_distance(top1, bottom1) +
-        euclidean_distance(top2, bottom2)
-    ) / 2
-
-    ear = vertical / horizontal
-
-    return ear
+import sys
+from config.settings import CAMERA_INDEX
+from utils.logger import logger
+from utils.visualizer import HUDVisualizer
+from detection.face_detector import FaceMeshDetector
+from detection.phone_detector import PhoneDetector
+from detection.drowsiness_detector import DrowsinessDetector
+from detection.yawn_detector import YawnDetector
+from monitoring.event_manager import EventManager
+from monitoring.session_manager import DrivingSession
+from alerts.alarm_manager import AlarmManager
 
 
+def main():
+    logger.info("Initializing Vehicle-Side AI Driver Behaviour & Safety Monitoring System...")
 
-def mouth_ratio(landmarks, w, h):
+    # Initialize Detector & Manager Modules
+    try:
+        face_detector = FaceMeshDetector()
+        phone_detector = PhoneDetector()
+        drowsiness_detector = DrowsinessDetector()
+        yawn_detector = YawnDetector()
+        session = DrivingSession()
+        event_manager = EventManager(session=session)
+        alarm_manager = AlarmManager()
+        logger.info(f"Active Driving Session started: {session.session_id}")
+    except Exception as e:
+        logger.error(f"Failed to initialize monitoring system modules: {e}")
+        sys.exit(1)
 
-    upper = landmarks[UPPER_LIP]
-    lower = landmarks[LOWER_LIP]
+    # Initialize Camera Capture
+    cap = cv2.VideoCapture(CAMERA_INDEX)
+    if not cap.isOpened():
+        logger.error(f"Cannot open camera at index {CAMERA_INDEX}")
+        sys.exit(1)
 
-    upper_point = (int(upper.x * w), int(upper.y * h))
-    lower_point = (int(lower.x * w), int(lower.y * h))
+    logger.info("Camera stream started successfully. Monitoring driver...")
+    logger.info("Press 'q' in the camera window to safely exit.")
 
-    distance = euclidean_distance(
-        upper_point,
-        lower_point
-    )
+    try:
+        while True:
+            success, frame = cap.read()
+            if not success:
+                logger.warning("Failed to grab frame from camera stream.")
+                break
 
-    return distance
+            # Horizontal flip for intuitive selfie mirror view
+            frame = cv2.flip(frame, 1)
 
+            # 1. Phone Detection (YOLO)
+            phone_detected, phone_conf, detected_boxes = phone_detector.detect(frame)
 
+            # 2. Face Landmark Detection (MediaPipe)
+            face_detected, avg_ear, mouth_dist, landmarks = face_detector.process_frame(frame)
 
-while True:
+            # 3. Raw Threshold Evaluations
+            is_eye_closed = drowsiness_detector.is_eye_closed(avg_ear)
+            is_mouth_open = yawn_detector.is_mouth_open(mouth_dist)
+            is_phone_detected = phone_detected
 
-    success, frame = cap.read()
-
-    if not success:
-        break
-
-  
-    frame = cv2.flip(frame, 1)
-
-  
-    rgb_frame = cv2.cvtColor(
-        frame,
-        cv2.COLOR_BGR2RGB
-    )
-
-    results = face_mesh.process(rgb_frame)
-
-    h, w, _ = frame.shape
-
-
-    yolo_results = model(frame)
-
-    for r in yolo_results:
-
-        boxes = r.boxes
-
-        for box in boxes:
-
-            cls = int(box.cls[0])
-            conf = float(box.conf[0])
-
-            class_name = model.names[cls]
-
-            if class_name == "cell phone" and conf > 0.50:
-
-                x1, y1, x2, y2 = map(
-                    int,
-                    box.xyxy[0]
-                )
-
-                cv2.rectangle(
-                    frame,
-                    (x1, y1),
-                    (x2, y2),
-                    (0, 0, 255),
-                    3
-                )
-
-                cv2.putText(
-                    frame,
-                    "PHONE DETECTED!",
-                    (x1, y1 - 10),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    1,
-                    (0, 0, 255),
-                    3
-                )
-
-    
-
-    if results.multi_face_landmarks:
-
-        for face_landmarks in results.multi_face_landmarks:
-
-            landmarks = face_landmarks.landmark
-
-           
-
-            left_ear = eye_aspect_ratio(
-                landmarks,
-                LEFT_EYE,
-                w,
-                h
+            # 4. Temporal Persistence & Event Management
+            active_summary = event_manager.process_frame_states(
+                is_eye_closed=is_eye_closed,
+                is_mouth_open=is_mouth_open,
+                is_phone_detected=is_phone_detected,
+                current_ear=avg_ear,
+                mouth_dist=mouth_dist,
+                phone_conf=phone_conf
             )
 
-            right_ear = eye_aspect_ratio(
-                landmarks,
-                RIGHT_EYE,
-                w,
-                h
+            # 5. Local Alarm Control
+            alarm_manager.update(event_manager.is_unsafe_active)
+
+            # 6. Evaluate HUD Display Status
+            current_event = event_manager.get_current_active_event_type()
+            overall_severity = "SAFE"
+            if current_event and current_event in active_summary:
+                overall_severity = active_summary[current_event]["severity"]
+
+            # 7. Render Visual Overlays
+            HUDVisualizer.draw_phone_boxes(frame, detected_boxes)
+            HUDVisualizer.draw_hud(
+                frame=frame,
+                ear=avg_ear,
+                mouth_dist=mouth_dist,
+                is_phone_detected=is_phone_detected,
+                is_drowsy_detected=is_eye_closed,
+                is_yawning_detected=is_mouth_open,
+                current_event_type=current_event,
+                overall_severity=overall_severity
             )
 
-            avg_ear = (
-                left_ear + right_ear
-            ) / 2
+            # Display Window
+            cv2.imshow("AI Fleet Driver Monitoring System", frame)
+
+            # Check Quit Signal ('q')
+            key = cv2.waitKey(1) & 0xFF
+            if key == ord("q"):
+                logger.info("Quit command received ('q'). Shutting down...")
+                break
+
+    except KeyboardInterrupt:
+        logger.info("Keyboard interrupt received. Shutting down...")
+    except Exception as e:
+        logger.error(f"Unexpected error in main execution loop: {e}")
+    finally:
+        # Resource Cleanup
+        logger.info("Cleaning up resources...")
+        alarm_manager.stop()
+        face_detector.close()
+        cap.release()
+        cv2.destroyAllWindows()
+        summary = session.get_summary()
+        logger.info(
+            f"Session {session.session_id} ended. Active Duration: {summary.get('duration_seconds')}s | "
+            f"Drowsy: {summary.get('drowsiness_count')} | Yawn: {summary.get('yawning_count')} | "
+            f"Phone: {summary.get('phone_count')} | Critical: {summary.get('critical_count')}"
+        )
+        logger.info("Session ended. Vehicle monitor safely stopped.")
 
 
-            mouth_open = mouth_ratio(
-                landmarks,
-                w,
-                h
-            )
-
-           
-
-            cv2.putText(
-                frame,
-                f"EAR: {avg_ear:.2f}",
-                (30, 50),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                1,
-                (0, 255, 0),
-                2
-            )
-
-            cv2.putText(
-                frame,
-                f"Mouth: {mouth_open:.2f}",
-                (30, 100),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                1,
-                (255, 0, 0),
-                2
-            )
-
-          
-
-            if avg_ear < 0.41:
-
-                if sleep_start is None:
-                    sleep_start = time.time()
-
-                elapsed = time.time() - sleep_start
-
-                cv2.putText(
-                    frame,
-                    "DROWSINESS DETECTED!",
-                    (100, 170),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    1,
-                    (0, 0, 255),
-                    3
-                )
-
-                if elapsed > 1 and not alarm_on:
-
-                    pygame.mixer.music.play(-1)
-                    alarm_on = True
-
-            else:
-
-                sleep_start = None
-
-                if alarm_on:
-
-                    pygame.mixer.music.stop()
-                    alarm_on = False
-
-          
-            if mouth_open > 20:
-
-                cv2.putText(
-                    frame,
-                    "YAWNING DETECTED!",
-                    (100, 230),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    1,
-                    (255, 0, 255),
-                    3
-                )
-
-   
-
-    cv2.imshow(
-        "AI Driver Monitoring System",
-        frame
-    )
-
-   
-    key = cv2.waitKey(1)
-
-    if key == ord('q'):
-        break
-
-
-
-cap.release()
-cv2.destroyAllWindows()
+if __name__ == "__main__":
+    main()

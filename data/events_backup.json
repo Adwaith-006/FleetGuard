@@ -1,0 +1,789 @@
+[
+    {
+        "event_id": "evt_d262af3f",
+        "driver_id": null,
+        "vehicle_id": null,
+        "session_id": null,
+        "event_type": "PHONE_DETECTED",
+        "start_time": "2026-10-07T19:36:30.330960",
+        "end_time": "2026-10-07T19:36:36.007127",
+        "duration": 5.68,
+        "severity": "CRITICAL",
+        "confidence": null,
+        "metrics": {
+            "max_confidence": 0.81
+        }
+    },
+    {
+        "event_id": "evt_f9030fe3",
+        "driver_id": null,
+        "vehicle_id": null,
+        "session_id": null,
+        "event_type": "PHONE_DETECTED",
+        "start_time": "2026-10-07T19:36:39.258188",
+        "end_time": "2026-10-07T19:36:41.718063",
+        "duration": 2.46,
+        "severity": "CRITICAL",
+        "confidence": null,
+        "metrics": {
+            "max_confidence": 0.91
+        }
+    },
+    {
+        "event_id": "evt_453d04ea",
+        "driver_id": null,
+        "vehicle_id": null,
+        "session_id": null,
+        "event_type": "YAWNING",
+        "start_time": "2026-10-07T19:36:50.071854",
+        "end_time": "2026-10-07T19:36:52.151897",
+        "duration": 2.08,
+        "severity": "WARNING",
+        "confidence": null,
+        "metrics": {
+            "max_mouth_dist": 38.05
+        }
+    },
+    {
+        "event_id": "evt_43901006",
+        "driver_id": null,
+        "vehicle_id": null,
+        "session_id": null,
+        "event_type": "YAWNING",
+        "start_time": "2026-10-07T21:26:09.686512",
+        "end_time": "2026-10-07T21:26:12.740915",
+        "duration": 3.05,
+        "severity": "WARNING",
+        "confidence": null,
+        "metrics": {
+            "max_mar": 0.69
+        }
+    },
+    {
+        "event_id": "evt_43901006",
+        "event_type": "YAWNING",
+        "start_time": "2026-10-07T21:26:09.686512",
+        "end_time": "2026-10-07T21:26:12.740915",
+        "duration": 3.05,
+        "timestamp": "2026-10-07T21:26:14.887008",
+        "confidence": null,
+        "metrics": {
+            "max_mar": 0.69
+        },
+        "status": "OBSERVED",
+        "severity": "WARNING",
+        "driver_id": "DRV001",
+        "driver_name": "Demo Driver",
+        "vehicle_id": "VEH001",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_41128f41",
+        "driver_id": null,
+        "vehicle_id": null,
+        "session_id": null,
+        "event_type": "YAWNING",
+        "start_time": "2026-10-07T21:26:37.840669",
+        "end_time": "2026-10-07T21:26:41.010724",
+        "duration": 3.17,
+        "severity": "WARNING",
+        "confidence": null,
+        "metrics": {
+            "max_mar": 0.83
+        }
+    },
+    {
+        "event_id": "evt_41128f41",
+        "event_type": "YAWNING",
+        "start_time": "2026-10-07T21:26:37.840669",
+        "end_time": "2026-10-07T21:26:41.010724",
+        "duration": 3.17,
+        "timestamp": "2026-10-07T21:26:43.074268",
+        "confidence": null,
+        "metrics": {
+            "max_mar": 0.83
+        },
+        "status": "OBSERVED",
+        "severity": "WARNING",
+        "driver_id": "DRV001",
+        "driver_name": "Demo Driver",
+        "vehicle_id": "VEH001",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_b85b1bb8",
+        "driver_id": null,
+        "vehicle_id": null,
+        "session_id": null,
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-07T21:27:03.821753",
+        "end_time": "2026-10-07T21:27:05.525694",
+        "duration": 1.7,
+        "severity": "WARNING",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.399
+        }
+    },
+    {
+        "event_id": "evt_b85b1bb8",
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-07T21:27:03.821753",
+        "end_time": "2026-10-07T21:27:05.525694",
+        "duration": 1.7,
+        "timestamp": "2026-10-07T21:27:07.584941",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.399
+        },
+        "status": "DROWSINESS_DETECTED",
+        "severity": "WARNING",
+        "driver_id": "DRV001",
+        "driver_name": "Demo Driver",
+        "vehicle_id": "VEH001",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_5fd27d47",
+        "driver_id": null,
+        "vehicle_id": null,
+        "session_id": null,
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-07T21:27:09.338861",
+        "end_time": "2026-10-07T21:27:11.227273",
+        "duration": 1.89,
+        "severity": "WARNING",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.395
+        }
+    },
+    {
+        "event_id": "evt_5fd27d47",
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-07T21:27:09.338861",
+        "end_time": "2026-10-07T21:27:11.227273",
+        "duration": 1.89,
+        "timestamp": "2026-10-07T21:27:13.288423",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.395
+        },
+        "status": "DROWSINESS_DETECTED",
+        "severity": "WARNING",
+        "driver_id": "DRV001",
+        "driver_name": "Demo Driver",
+        "vehicle_id": "VEH001",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_173c2a7b",
+        "driver_id": null,
+        "vehicle_id": null,
+        "session_id": null,
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-07T21:27:14.639337",
+        "end_time": "2026-10-07T21:27:16.178057",
+        "duration": 1.54,
+        "severity": "WARNING",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.399
+        }
+    },
+    {
+        "event_id": "evt_173c2a7b",
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-07T21:27:14.639337",
+        "end_time": "2026-10-07T21:27:16.178057",
+        "duration": 1.54,
+        "timestamp": "2026-10-07T21:27:18.256718",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.399
+        },
+        "status": "DROWSINESS_DETECTED",
+        "severity": "WARNING",
+        "driver_id": "DRV001",
+        "driver_name": "Demo Driver",
+        "vehicle_id": "VEH001",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_fd5ed6fc",
+        "driver_id": null,
+        "vehicle_id": null,
+        "session_id": null,
+        "event_type": "YAWNING",
+        "start_time": "2026-10-07T21:27:32.207538",
+        "end_time": "2026-10-07T21:27:34.985218",
+        "duration": 2.78,
+        "severity": "WARNING",
+        "confidence": null,
+        "metrics": {
+            "max_mar": 0.83
+        }
+    },
+    {
+        "event_id": "evt_a5114a8b",
+        "driver_id": null,
+        "vehicle_id": null,
+        "session_id": null,
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-07T21:27:34.291825",
+        "end_time": "2026-10-07T21:27:35.725465",
+        "duration": 1.43,
+        "severity": "WARNING",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.386
+        }
+    },
+    {
+        "event_id": "evt_fd5ed6fc",
+        "event_type": "YAWNING",
+        "start_time": "2026-10-07T21:27:32.207538",
+        "end_time": "2026-10-07T21:27:34.985218",
+        "duration": 2.78,
+        "timestamp": "2026-10-07T21:27:37.066895",
+        "confidence": null,
+        "metrics": {
+            "max_mar": 0.83
+        },
+        "status": "OBSERVED",
+        "severity": "WARNING",
+        "driver_id": "DRV001",
+        "driver_name": "Demo Driver",
+        "vehicle_id": "VEH001",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_a5114a8b",
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-07T21:27:34.291825",
+        "end_time": "2026-10-07T21:27:35.725465",
+        "duration": 1.43,
+        "timestamp": "2026-10-07T21:27:37.803345",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.386
+        },
+        "status": "DROWSINESS_DETECTED",
+        "severity": "WARNING",
+        "driver_id": "DRV001",
+        "driver_name": "Demo Driver",
+        "vehicle_id": "VEH001",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_079b6d6b",
+        "driver_id": null,
+        "vehicle_id": null,
+        "session_id": null,
+        "event_type": "YAWNING",
+        "start_time": "2026-10-07T21:27:54.612504",
+        "end_time": "2026-10-07T21:27:58.923658",
+        "duration": 4.31,
+        "severity": "CRITICAL",
+        "confidence": null,
+        "metrics": {
+            "max_mar": 1.03
+        }
+    },
+    {
+        "event_id": "evt_3a518af9",
+        "driver_id": null,
+        "vehicle_id": null,
+        "session_id": null,
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-07T21:27:54.281066",
+        "end_time": "2026-10-07T21:27:59.591125",
+        "duration": 5.31,
+        "severity": "CRITICAL",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.379
+        }
+    },
+    {
+        "event_id": "evt_079b6d6b",
+        "event_type": "YAWNING",
+        "start_time": "2026-10-07T21:27:54.612504",
+        "end_time": "2026-10-07T21:27:58.923658",
+        "duration": 4.31,
+        "timestamp": "2026-10-07T21:28:01.007030",
+        "confidence": null,
+        "metrics": {
+            "max_mar": 1.03
+        },
+        "status": "ATTENTION_REQUIRED",
+        "severity": "CRITICAL",
+        "driver_id": "DRV001",
+        "driver_name": "Demo Driver",
+        "vehicle_id": "VEH001",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_3a518af9",
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-07T21:27:54.281066",
+        "end_time": "2026-10-07T21:27:59.591125",
+        "duration": 5.31,
+        "timestamp": "2026-10-07T21:28:01.671653",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.379
+        },
+        "status": "HIGH_RISK",
+        "severity": "CRITICAL",
+        "driver_id": "DRV001",
+        "driver_name": "Demo Driver",
+        "vehicle_id": "VEH001",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_97e531b9",
+        "driver_id": null,
+        "vehicle_id": null,
+        "session_id": null,
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-07T21:28:06.189580",
+        "end_time": "2026-10-07T21:28:08.049138",
+        "duration": 1.86,
+        "severity": "WARNING",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.39
+        }
+    },
+    {
+        "event_id": "evt_97e531b9",
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-07T21:28:06.189580",
+        "end_time": "2026-10-07T21:28:08.049138",
+        "duration": 1.86,
+        "timestamp": "2026-10-07T21:28:10.140613",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.39
+        },
+        "status": "DROWSINESS_DETECTED",
+        "severity": "WARNING",
+        "driver_id": "DRV001",
+        "driver_name": "Demo Driver",
+        "vehicle_id": "VEH001",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_d793f7ba",
+        "driver_id": null,
+        "vehicle_id": null,
+        "session_id": null,
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-07T21:28:08.524056",
+        "end_time": "2026-10-07T21:28:13.402669",
+        "duration": 4.88,
+        "severity": "CRITICAL",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.396
+        }
+    },
+    {
+        "event_id": "evt_d793f7ba",
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-07T21:28:08.524056",
+        "end_time": "2026-10-07T21:28:13.402669",
+        "duration": 4.88,
+        "timestamp": "2026-10-07T21:28:15.483105",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.396
+        },
+        "status": "HIGH_RISK",
+        "severity": "CRITICAL",
+        "driver_id": "DRV001",
+        "driver_name": "Demo Driver",
+        "vehicle_id": "VEH001",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_47d7b452",
+        "driver_id": null,
+        "vehicle_id": null,
+        "session_id": null,
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-07T21:28:50.732551",
+        "end_time": "2026-10-07T21:28:52.759583",
+        "duration": 2.03,
+        "severity": "WARNING",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.397
+        }
+    },
+    {
+        "event_id": "evt_47d7b452",
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-07T21:28:50.732551",
+        "end_time": "2026-10-07T21:28:52.759583",
+        "duration": 2.03,
+        "timestamp": "2026-10-07T21:28:54.820984",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.397
+        },
+        "status": "DROWSINESS_DETECTED",
+        "severity": "WARNING",
+        "driver_id": "DRV001",
+        "driver_name": "Demo Driver",
+        "vehicle_id": "VEH001",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_d92e5f46",
+        "driver_id": null,
+        "vehicle_id": null,
+        "session_id": null,
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-07T21:29:59.449651",
+        "end_time": "2026-10-07T21:30:01.165687",
+        "duration": 1.72,
+        "severity": "WARNING",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.39
+        }
+    },
+    {
+        "event_id": "evt_d92e5f46",
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-07T21:29:59.449651",
+        "end_time": "2026-10-07T21:30:01.165687",
+        "duration": 1.72,
+        "timestamp": "2026-10-07T21:30:03.222485",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.39
+        },
+        "status": "DROWSINESS_DETECTED",
+        "severity": "WARNING",
+        "driver_id": "DRV001",
+        "driver_name": "Demo Driver",
+        "vehicle_id": "VEH001",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_3aec4105",
+        "driver_id": null,
+        "vehicle_id": null,
+        "session_id": null,
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-07T21:30:51.192530",
+        "end_time": "2026-10-07T21:30:54.055491",
+        "duration": 2.86,
+        "severity": "WARNING",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.39
+        }
+    },
+    {
+        "event_id": "evt_49ced2c6",
+        "driver_id": null,
+        "vehicle_id": null,
+        "session_id": null,
+        "event_type": "YAWNING",
+        "start_time": "2026-10-07T21:30:51.479614",
+        "end_time": "2026-10-07T21:30:54.055491",
+        "duration": 2.58,
+        "severity": "WARNING",
+        "confidence": null,
+        "metrics": {
+            "max_mar": 0.77
+        }
+    },
+    {
+        "event_id": "evt_3aec4105",
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-07T21:30:51.192530",
+        "end_time": "2026-10-07T21:30:54.055491",
+        "duration": 2.86,
+        "timestamp": "2026-10-07T21:30:56.156902",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.39
+        },
+        "status": "HIGH_RISK",
+        "severity": "WARNING",
+        "driver_id": "DRV001",
+        "driver_name": "Demo Driver",
+        "vehicle_id": "VEH001",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_49ced2c6",
+        "event_type": "YAWNING",
+        "start_time": "2026-10-07T21:30:51.479614",
+        "end_time": "2026-10-07T21:30:54.055491",
+        "duration": 2.58,
+        "timestamp": "2026-10-07T21:30:56.228808",
+        "confidence": null,
+        "metrics": {
+            "max_mar": 0.77
+        },
+        "status": "OBSERVED",
+        "severity": "WARNING",
+        "driver_id": "DRV001",
+        "driver_name": "Demo Driver",
+        "vehicle_id": "VEH001",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_d15b82e9",
+        "driver_id": "DRV001",
+        "vehicle_id": "VEH001",
+        "session_id": null,
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-23T20:01:15.846691",
+        "end_time": "2026-10-23T20:01:17.476524",
+        "duration": 1.63,
+        "severity": "WARNING",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.392
+        },
+        "timestamp": "2026-10-23T20:01:17.476524",
+        "status": "DROWSINESS_DETECTED",
+        "driver_name": "Demo Driver",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_043790b4",
+        "driver_id": "DRV001",
+        "vehicle_id": "VEH001",
+        "session_id": null,
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-23T20:01:17.656256",
+        "end_time": "2026-10-23T20:01:20.516357",
+        "duration": 2.86,
+        "severity": "WARNING",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.393
+        },
+        "timestamp": "2026-10-23T20:01:20.516357",
+        "status": "HIGH_RISK",
+        "driver_name": "Demo Driver",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_43fc8d42",
+        "driver_id": "DRV001",
+        "vehicle_id": "VEH001",
+        "session_id": null,
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-23T20:01:39.118605",
+        "end_time": "2026-10-23T20:01:40.820176",
+        "duration": 1.7,
+        "severity": "WARNING",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.401
+        },
+        "timestamp": "2026-10-23T20:01:40.820176",
+        "status": "DROWSINESS_DETECTED",
+        "driver_name": "Demo Driver",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_760d2ca7",
+        "driver_id": "DRV001",
+        "vehicle_id": "VEH001",
+        "session_id": null,
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-23T20:21:53.510791",
+        "end_time": "2026-10-23T20:21:55.571499",
+        "duration": 2.06,
+        "severity": "WARNING",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.399
+        },
+        "timestamp": "2026-10-23T20:21:55.571499",
+        "status": "DROWSINESS_DETECTED",
+        "driver_name": "Demo Driver",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_31b01219",
+        "driver_id": "DRV001",
+        "vehicle_id": "VEH001",
+        "session_id": null,
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-23T20:24:38.448765",
+        "end_time": "2026-10-23T20:24:41.186134",
+        "duration": 2.74,
+        "severity": "WARNING",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.401
+        },
+        "timestamp": "2026-10-23T20:24:41.186134",
+        "status": "HIGH_RISK",
+        "driver_name": "Demo Driver",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_fb118595",
+        "driver_id": "DRV001",
+        "vehicle_id": "VEH001",
+        "session_id": null,
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-23T20:24:49.469184",
+        "end_time": "2026-10-23T20:24:54.673468",
+        "duration": 5.2,
+        "severity": "CRITICAL",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.393
+        },
+        "timestamp": "2026-10-23T20:24:54.673468",
+        "status": "HIGH_RISK",
+        "driver_name": "Demo Driver",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_c576a1e7",
+        "driver_id": "DRV001",
+        "vehicle_id": "VEH001",
+        "session_id": null,
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-23T20:25:26.919092",
+        "end_time": "2026-10-23T20:25:29.217561",
+        "duration": 2.3,
+        "severity": "WARNING",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.396
+        },
+        "timestamp": "2026-10-23T20:25:29.217561",
+        "status": "DROWSINESS_DETECTED",
+        "driver_name": "Demo Driver",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_a61543c8",
+        "driver_id": "DRV001",
+        "vehicle_id": "VEH001",
+        "session_id": null,
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-23T20:25:49.571317",
+        "end_time": "2026-10-23T20:25:51.976942",
+        "duration": 2.41,
+        "severity": "WARNING",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.386
+        },
+        "timestamp": "2026-10-23T20:25:51.976942",
+        "status": "DROWSINESS_DETECTED",
+        "driver_name": "Demo Driver",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_1a9d5926",
+        "driver_id": "DRV001",
+        "vehicle_id": "VEH001",
+        "session_id": null,
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-23T20:28:10.452674",
+        "end_time": "2026-10-23T20:28:12.201591",
+        "duration": 1.75,
+        "severity": "WARNING",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.4
+        },
+        "timestamp": "2026-10-23T20:28:12.201591",
+        "status": "DROWSINESS_DETECTED",
+        "driver_name": "Demo Driver",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_30a58f60",
+        "driver_id": "DRV001",
+        "vehicle_id": "VEH001",
+        "session_id": null,
+        "event_type": "PHONE_DETECTED",
+        "start_time": "2026-10-23T20:28:39.447960",
+        "end_time": "2026-10-23T20:28:41.771982",
+        "duration": 2.32,
+        "severity": "LOW",
+        "confidence": null,
+        "metrics": {
+            "max_confidence": 0.86
+        },
+        "timestamp": "2026-10-23T20:28:41.771982",
+        "status": "BRIEF",
+        "driver_name": "Demo Driver",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_498eab66",
+        "driver_id": "DRV001",
+        "vehicle_id": "VEH001",
+        "session_id": null,
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-23T20:37:02.834540",
+        "end_time": "2026-10-23T20:37:04.632351",
+        "duration": 1.8,
+        "severity": "WARNING",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.392
+        },
+        "timestamp": "2026-10-23T20:37:04.632351",
+        "status": "DROWSINESS_DETECTED",
+        "driver_name": "Demo Driver",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_4185eeb2",
+        "driver_id": "DRV001",
+        "vehicle_id": "VEH001",
+        "session_id": null,
+        "event_type": "PHONE_DETECTED",
+        "start_time": "2026-10-23T20:37:08.018195",
+        "end_time": "2026-10-23T20:37:10.516044",
+        "duration": 2.5,
+        "severity": "LOW",
+        "confidence": null,
+        "metrics": {
+            "max_confidence": 0.7
+        },
+        "timestamp": "2026-10-23T20:37:10.516044",
+        "status": "BRIEF",
+        "driver_name": "Demo Driver",
+        "vehicle_no": "Demo Test Vehicle"
+    },
+    {
+        "event_id": "evt_f26ad03c",
+        "driver_id": "DRV001",
+        "vehicle_id": "VEH001",
+        "session_id": null,
+        "event_type": "DROWSINESS",
+        "start_time": "2026-10-23T20:37:29.581908",
+        "end_time": "2026-10-23T20:37:31.557347",
+        "duration": 1.98,
+        "severity": "WARNING",
+        "confidence": null,
+        "metrics": {
+            "avg_ear": 0.393
+        },
+        "timestamp": "2026-10-23T20:37:31.557347",
+        "status": "DROWSINESS_DETECTED",
+        "driver_name": "Demo Driver",
+        "vehicle_no": "Demo Test Vehicle"
+    }
+]
