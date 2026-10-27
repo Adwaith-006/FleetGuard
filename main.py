@@ -1,7 +1,17 @@
-import cv2
+import argparse
 import sys
-from config.settings import CAMERA_INDEX
+import cv2
+from typing import Optional
+
+from config.settings import (
+    VIDEO_SOURCE,
+    DRIVER_ID,
+    VEHICLE_ID,
+    ALARM_ENABLED,
+    ENABLE_PHONE_DETECTION
+)
 from utils.logger import logger
+from utils.camera_manager import CameraManager
 from utils.visualizer import HUDVisualizer
 from detection.face_detector import FaceMeshDetector
 from detection.phone_detector import PhoneDetector
@@ -12,113 +22,184 @@ from monitoring.session_manager import DrivingSession
 from alerts.alarm_manager import AlarmManager
 
 
+def parse_arguments():
+    """Parses command-line arguments for the monitoring service."""
+    parser = argparse.ArgumentParser(
+        description="Vehicle-Side AI Driver Behaviour & Safety Monitoring System"
+    )
+    parser.add_argument(
+        "-s", "--source",
+        default=VIDEO_SOURCE,
+        help="Camera index (e.g. 0, 1) or path to prerecorded video file (e.g. test.mp4)"
+    )
+    parser.add_argument(
+        "--driver-id",
+        default=DRIVER_ID,
+        help=f"Driver identifier (default: {DRIVER_ID})"
+    )
+    parser.add_argument(
+        "--vehicle-id",
+        default=VEHICLE_ID,
+        help=f"Vehicle identifier (default: {VEHICLE_ID})"
+    )
+    parser.add_argument(
+        "--no-alarm",
+        action="store_true",
+        help="Disable local audio alarm"
+    )
+    parser.add_argument(
+        "--no-phone",
+        action="store_true",
+        help="Disable phone detection"
+    )
+    parser.add_argument(
+        "--headless",
+        action="store_true",
+        help="Run without displaying OpenCV GUI window"
+    )
+    return parser.parse_args()
+
+
 def main():
-    logger.info("Initializing Vehicle-Side AI Driver Behaviour & Safety Monitoring System...")
+    args = parse_arguments()
 
-    # Initialize Detector & Manager Modules
-    try:
-        face_detector = FaceMeshDetector()
-        phone_detector = PhoneDetector()
-        drowsiness_detector = DrowsinessDetector()
-        yawn_detector = YawnDetector()
-        session = DrivingSession()
-        event_manager = EventManager(session=session)
-        alarm_manager = AlarmManager()
-        logger.info(f"Active Driving Session started: {session.session_id}")
-    except Exception as e:
-        logger.error(f"Failed to initialize monitoring system modules: {e}")
+    logger.info("=" * 60)
+    logger.info("AI FLEET DRIVER BEHAVIOUR & SAFETY MONITORING SERVICE")
+    logger.info(f"Driver ID: {args.driver_id} | Vehicle ID: {args.vehicle_id} | Source: {args.source}")
+    logger.info("=" * 60)
+
+    # 1. Initialize Managers and Detectors
+    session = DrivingSession(driver_id=args.driver_id, vehicle_id=args.vehicle_id)
+    event_manager = EventManager(session=session, driver_id=args.driver_id, vehicle_id=args.vehicle_id)
+    
+    alarm_enabled = ALARM_ENABLED and not args.no_alarm
+    alarm_manager = AlarmManager(enabled=alarm_enabled)
+
+    face_detector = FaceMeshDetector()
+    drowsiness_detector = DrowsinessDetector()
+    yawn_detector = YawnDetector()
+
+    phone_detection_enabled = ENABLE_PHONE_DETECTION and not args.no_phone
+    phone_detector = PhoneDetector(enabled=phone_detection_enabled)
+
+    logger.info(f"Driving Session ID: {session.session_id}")
+    logger.info(f"Face Mesh: {'Available' if face_detector.is_available else 'Unavailable (Disabled)'}")
+    logger.info(f"Phone Detection: {'Active' if phone_detector.is_available else phone_detector.status_reason}")
+    logger.info(f"Audio Alarm: {'Enabled' if alarm_enabled else 'Disabled'}")
+
+    # 2. Initialize Camera Capture
+    camera_manager = CameraManager(source=args.source)
+    opened, err = camera_manager.start()
+    if not opened:
+        logger.error(f"Cannot initialize camera or video source: {err}")
         sys.exit(1)
 
-    # Initialize Camera Capture
-    cap = cv2.VideoCapture(CAMERA_INDEX)
-    if not cap.isOpened():
-        logger.error(f"Cannot open camera at index {CAMERA_INDEX}")
-        sys.exit(1)
-
-    logger.info("Camera stream started successfully. Monitoring driver...")
-    logger.info("Press 'q' in the camera window to safely exit.")
+    logger.info("Monitoring active. Press 'q' in the camera window to safely exit.")
 
     try:
         while True:
-            success, frame = cap.read()
-            if not success:
-                logger.warning("Failed to grab frame from camera stream.")
-                break
+            success, frame = camera_manager.read()
+            if not success or frame is None:
+                if camera_manager.consecutive_failures >= camera_manager.max_consecutive_failures:
+                    logger.error("Camera stream disconnected or terminated. Ending monitoring loop.")
+                    break
+                continue
 
-            # Horizontal flip for intuitive selfie mirror view
-            frame = cv2.flip(frame, 1)
-
-            # 1. Phone Detection (YOLO)
+            # A. Phone Detection (YOLO - Optional)
             phone_detected, phone_conf, detected_boxes = phone_detector.detect(frame)
 
-            # 2. Face Landmark Detection (MediaPipe)
-            face_detected, avg_ear, mouth_dist, landmarks = face_detector.process_frame(frame)
+            # B. Face Landmark Detection (MediaPipe)
+            face_detected, avg_ear, mouth_mar, landmarks = face_detector.process_frame(frame)
 
-            # 3. Raw Threshold Evaluations
+            # C. Behaviour State Evaluation with Elapsed Time
+            drowsy_info = drowsiness_detector.update(avg_ear)
+            yawn_info = yawn_detector.update(mouth_mar)
+
+            # Raw conditions for event persistence tracking
             is_eye_closed = drowsiness_detector.is_eye_closed(avg_ear)
-            is_mouth_open = yawn_detector.is_mouth_open(mouth_dist)
-            is_phone_detected = phone_detected
+            is_mouth_open = yawn_detector.is_mouth_open(mouth_mar)
 
-            # 4. Temporal Persistence & Event Management
-            active_summary = event_manager.process_frame_states(
+            # D. Centralized Event Lifecycle & Persistence
+            active_events = event_manager.process_frame_states(
                 is_eye_closed=is_eye_closed,
                 is_mouth_open=is_mouth_open,
-                is_phone_detected=is_phone_detected,
+                is_phone_detected=phone_detected,
                 current_ear=avg_ear,
-                mouth_dist=mouth_dist,
+                mouth_dist=mouth_mar,
                 phone_conf=phone_conf
             )
 
-            # 5. Local Alarm Control
-            alarm_manager.update(event_manager.is_unsafe_active)
-
-            # 6. Evaluate HUD Display Status
+            # E. Compute Overall Severity
             current_event = event_manager.get_current_active_event_type()
             overall_severity = "SAFE"
-            if current_event and current_event in active_summary:
-                overall_severity = active_summary[current_event]["severity"]
+            if current_event and current_event in active_events:
+                overall_severity = active_events[current_event].get("severity", "SAFE")
+            elif active_events:
+                # If any active event is critical
+                if any(v.get("severity") == "CRITICAL" for v in active_events.values()):
+                    overall_severity = "CRITICAL"
+                elif any(v.get("severity") == "WARNING" for v in active_events.values()):
+                    overall_severity = "WARNING"
 
-            # 7. Render Visual Overlays
-            HUDVisualizer.draw_phone_boxes(frame, detected_boxes)
-            HUDVisualizer.draw_hud(
-                frame=frame,
-                ear=avg_ear,
-                mouth_dist=mouth_dist,
-                is_phone_detected=is_phone_detected,
-                is_drowsy_detected=is_eye_closed,
-                is_yawning_detected=is_mouth_open,
-                current_event_type=current_event,
-                overall_severity=overall_severity
-            )
+            # F. Audio Alarm Control
+            alarm_manager.update(event_manager.is_unsafe_active, severity=overall_severity)
 
-            # Display Window
-            cv2.imshow("AI Fleet Driver Monitoring System", frame)
+            # G. HUD Visualization (if GUI display enabled)
+            if not args.headless:
+                phone_status_str = "ACTIVE" if phone_detected else ("READY" if phone_detector.is_available else "OFF")
+                HUDVisualizer.draw_phone_boxes(frame, detected_boxes)
+                HUDVisualizer.draw_hud(
+                    frame=frame,
+                    face_detected=face_detected,
+                    ear=avg_ear,
+                    mouth_mar=mouth_mar,
+                    is_phone_detected=phone_detected,
+                    phone_status=phone_status_str,
+                    active_events=active_events,
+                    overall_severity=overall_severity,
+                    current_event_type=current_event
+                )
 
-            # Check Quit Signal ('q')
-            key = cv2.waitKey(1) & 0xFF
-            if key == ord("q"):
-                logger.info("Quit command received ('q'). Shutting down...")
-                break
+                cv2.imshow("AI Driver Safety Monitoring Service", frame)
+
+                key = cv2.waitKey(1) & 0xFF
+                if key == ord("q"):
+                    logger.info("User requested shutdown ('q' key pressed).")
+                    break
 
     except KeyboardInterrupt:
-        logger.info("Keyboard interrupt received. Shutting down...")
+        logger.info("Keyboard interrupt received. Stopping monitoring service...")
     except Exception as e:
-        logger.error(f"Unexpected error in main execution loop: {e}")
+        logger.error(f"Unexpected error in monitoring loop: {e}", exc_info=True)
     finally:
-        # Resource Cleanup
-        logger.info("Cleaning up resources...")
+        # Graceful Resource Cleanup
+        logger.info("Initiating service shutdown and cleanup...")
+        event_manager.flush_active_events()
         alarm_manager.stop()
         face_detector.close()
-        cap.release()
-        cv2.destroyAllWindows()
+        camera_manager.release()
+        session.close()
+
+        if not args.headless:
+            try:
+                cv2.destroyAllWindows()
+            except Exception:
+                pass
+
         summary = session.get_summary()
-        logger.info(
-            f"Session {session.session_id} ended. Active Duration: {summary.get('duration_seconds')}s | "
-            f"Drowsy: {summary.get('drowsiness_count')} | Yawn: {summary.get('yawning_count')} | "
-            f"Phone: {summary.get('phone_count')} | Critical: {summary.get('critical_count')}"
-        )
-        logger.info("Session ended. Vehicle monitor safely stopped.")
+        logger.info("=" * 60)
+        logger.info(f"DRIVING SESSION SUMMARY ({summary['session_id']}):")
+        logger.info(f"  Duration:         {summary['duration_seconds']}s")
+        logger.info(f"  Drowsiness Events:{summary['drowsiness_count']}")
+        logger.info(f"  Yawning Events:   {summary['yawning_count']}")
+        logger.info(f"  Phone Use Events: {summary['phone_count']}")
+        logger.info(f"  Warning Events:   {summary['warning_count']}")
+        logger.info(f"  Critical Events:  {summary['critical_count']}")
+        logger.info("=" * 60)
+        logger.info("Driver monitoring service safely stopped.")
 
 
 if __name__ == "__main__":
     main()
+
+

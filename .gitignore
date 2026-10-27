@@ -1,20 +1,35 @@
 
-venv/
+# Python virtual environments
 .venv/
+.venv*/
+*.venv*
+venv/
+env/
+**/.venv*/
+**/.venv/
+**/venv/
+
+# Python generated files
 __pycache__/
+*.py[cod]
+*$py.class
 *.pyc
 
+# Local environment secrets
 .env
 .env.*
 !.env.example
 
+# Node.js generated files
 node_modules/
 dist/
 build/
 
+# Logs and runtime data
 *.log
 data/events.json
 
+# Large model weights & binaries
 *.pt
 *.pth
 *.onnx

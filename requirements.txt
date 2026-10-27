@@ -1,4 +1,17 @@
-opencv-python
-mediapipe
-numpy
-pygame
+# ==============================================================================
+# Driver Drowsiness & Safety Monitoring System - Dependencies
+# ==============================================================================
+# Each service maintains its own isolated dependency specification:
+#
+# 1. Driver Monitoring Service:
+#    pip install -r driver_service/requirements.txt
+#
+# 2. Owner Management Service (Backend):
+#    pip install -r owner_service/backend/requirements.txt
+#
+# 3. Owner Management Service (Frontend):
+#    cd owner_service/frontend && npm install
+# ==============================================================================
+
+-r driver_service/requirements.txt
+-r owner_service/backend/requirements.txt

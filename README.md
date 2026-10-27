@@ -1,354 +1,162 @@
-# AI Driver Drowsiness & Behaviour Safety Monitoring System
+# AI Fleet Driver Behaviour & Safety Monitoring Platform
 
-An AI-powered driver monitoring and fleet safety platform designed to detect signs of driver drowsiness and unsafe behaviour, record safety events, and help fleet owners review driver and vehicle safety through a web dashboard.
+An enterprise-grade, edge-to-owner commercial fleet safety platform organized into two independent, decoupled services:
 
-## 1. Project Overview
-
-This project combines computer vision, a Python monitoring engine, a FastAPI backend, and a React-based owner dashboard.
-
-The system is designed to:
-- Detect driver drowsiness using a camera.
-- Identify yawning and potential mobile phone usage.
-- Generate safety events with timestamps, duration, and severity.
-- Send monitoring events to a backend.
-- Display driver, vehicle, safety history, and analytics on an owner dashboard.
-- Generate downloadable safety reports in PDF format.
-
-**Development status:** The core monitoring and dashboard architecture is present in the repository. Verify each feature locally before treating it as production-ready. The Ollama/Gemma chatbot integration is a planned development task and must be completed and tested separately.
-
-## 2. System Architecture
-
-```text
-Camera Input
-     |
-     v
-Python AI Monitoring Engine
-     |
-     +--> Drowsiness Detection
-     +--> Face Detection
-     +--> Yawning Detection
-     +--> Phone Detection
-     |
-     v
-Safety Event Manager
-     |
-     v
-FastAPI Backend
-     |
-     +--> REST API
-     +--> WebSocket Communication
-     +--> Event Storage
-     |
-     v
-React Owner Dashboard
-     |
-     +--> Driver and Vehicle Details
-     +--> Safety History and Analytics
-     +--> Reports and PDF Downloads
-```
-
-The AI monitoring engine processes camera frames and produces safety events. The backend receives and stores events, while the frontend provides the interface for fleet owners to review monitoring results.
-
-## 3. Technology Stack
-
-| Technology | Purpose |
-|---|---|
-| Python | AI monitoring engine and event processing |
-| OpenCV | Camera access and image processing |
-| MediaPipe | Facial landmark detection, if used by the configured detector |
-| YOLO | Object detection, including potential phone detection |
-| FastAPI | Backend APIs |
-| WebSockets | Live event communication |
-| React | Owner dashboard interface |
-| Vite | Frontend development server and build tooling |
-| JavaScript and CSS | Dashboard functionality and styling |
-| Ollama / Gemma | Planned local LLM integration |
-
-The actual model and library usage depends on the implementation and configuration of each module.
-
-## 4. Project Structure
-
-```text
-DriverDrowsinessDetection/
-|
-|-- main.py                 # Main AI monitoring application
-|-- requirements.txt        # Python dependencies
-|-- alarm.mp3               # Local alarm audio
-|-- yolov8n.pt              # YOLO model weights, if downloaded
-|-- .gitignore              # Files excluded from Git
-|-- README.md               # Project documentation
-|
-|-- alerts/
-|   |-- alarm_manager.py    # Alarm handling
-|
-|-- backend/
-|   |-- main.py             # FastAPI application
-|   |-- config.py           # Backend configuration
-|   |-- models.py           # Backend data models
-|   |-- storage.py          # Event storage operations
-|   |-- websocket.py        # WebSocket handling
-|   |-- requirements.txt    # Backend dependencies
-|
-|-- config/
-|   |-- settings.py         # Monitoring configuration
-|
-|-- data/
-|   |-- events_backup.json  # Existing event backup/sample data
-|
-|-- detection/
-|   |-- drowsiness_detector.py
-|   |-- face_detector.py
-|   |-- phone_detector.py
-|   |-- yawn_detector.py
-|
-|-- models/
-|   |-- events.py           # Safety event structures
-|
-|-- monitoring/
-|   |-- event_manager.py    # Safety event management
-|   |-- session_manager.py  # Monitoring sessions
-|   |-- severity_manager.py # Severity classification
-|
-|-- sync/
-|   |-- api_client.py       # Backend communication client
-|
-|-- utils/
-|   |-- logger.py           # Logging utilities
-|   |-- visualizer.py       # Monitoring visualizations
-|
-|-- owner_dashboard/
-    |-- package.json
-    |-- vite.config.js
-    |-- src/
-        |-- components/
-        |-- context/
-        |-- pages/
-        |-- services/
-        |-- utils/
-```
-
-## 5. Prerequisites
-
-Install the following software before running the project:
-
-- Python 3.10 or a compatible version supported by the project's dependencies.
-- Node.js and npm.
-- Git.
-- VS Code or another code editor.
-- A working webcam.
-- Ollama only if you are developing the local LLM integration.
-
-Check your installations:
-
-```bash
-python --version
-pip --version
-node --version
-npm --version
-git --version
-```
-
-## 6. Clone the Repository
-
-Open a terminal and run:
-
-```bash
-git clone <YOUR_GITHUB_REPOSITORY_URL>
-cd DriverDrowsinessDetection
-```
-
-Replace `<YOUR_GITHUB_REPOSITORY_URL>` with the HTTPS URL of this repository.
-
-## 7. Set Up the Python Environment
-
-From the project root, create and activate a virtual environment.
-
-**Windows PowerShell:**
-
-```powershell
-python -m venv venv
-.\venv\Scripts\Activate.ps1
-```
-
-If PowerShell blocks activation, you can use Command Prompt instead:
-
-```bat
-venv\Scripts\activate.bat
-```
-
-Install the root dependencies:
-
-```bash
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-```
-
-If the backend has additional dependencies, install them as well:
-
-```bash
-pip install -r backend/requirements.txt
-```
-
-If a dependency installation fails, check its Python-version and operating-system requirements before changing package versions.
-
-## 8. Download the Required YOLO Model
-
-The `.pt` model weights are excluded from this Git repository by `.gitignore`.
-
-If the application expects `yolov8n.pt`, download the corresponding official YOLOv8 nano model using the Ultralytics package:
-
-```bash
-pip install ultralytics
-```
-
-Then, from the project root:
-
-```bash
-yolo predict model=yolov8n.pt source=0
-```
-
-This example invokes YOLO prediction on the webcam and is intended to verify that the model can load. It is not a replacement for running the project's complete monitoring application.
-
-If your configured code downloads the model automatically, follow the model-loading logic in that code instead. Place the weights at the path expected by the application.
-
-## 9. Run the AI Monitoring Engine
-
-Open a terminal in the project root, activate the virtual environment, and run:
-
-```bash
-python main.py
-```
-
-The monitoring engine is intended to access the webcam, process frames, detect configured unsafe behaviours, and generate safety events.
-
-Before testing:
-- Close other applications that are using the webcam.
-- Allow camera access in Windows privacy settings.
-- Confirm that the required model weights are available.
-- Check the configuration if the camera index or model path differs on your machine.
-
-Use a stationary test setup. Do not test drowsiness detection while driving a real vehicle.
-
-## 10. Run the FastAPI Backend
-
-Open a **separate terminal** in the project root and activate the same virtual environment.
-
-Try:
-
-```bash
-uvicorn backend.main:app --reload --host 127.0.0.1 --port 8000
-```
-
-If the application cannot be imported using this module path, inspect the imports and entry-point configuration in `backend/main.py` and use the appropriate module path.
-
-When the server starts successfully, open:
-
-- API documentation: http://127.0.0.1:8000/docs
-- Local API root: http://127.0.0.1:8000/
-
-The root URL may not return a page unless a root endpoint has been implemented. The `/docs` page is available when FastAPI's interactive documentation is enabled.
-
-The monitoring engine and backend must use matching API endpoints and configuration for telemetry to work correctly.
-
-## 11. Run the React Owner Dashboard
-
-Open another terminal:
-
-```bash
-cd owner_dashboard
-npm install
-npm run dev
-```
-
-Vite will print the local development URL in the terminal. Open that URL in your browser; it is commonly http://localhost:5173.
-
-If the dashboard cannot connect to the backend, check the API base URL and WebSocket URL in the frontend configuration and service files. Make sure they match the backend address and port.
-
-The dashboard may include sample data or UI components that still need to be connected to live backend responses.
-
-## 12. Planned Ollama / Gemma Integration
-
-The intended next step is to add a local AI assistant to the owner dashboard.
-
-Possible responsibilities include:
-- Summarizing driver safety events.
-- Explaining safety reports in natural language.
-- Answering questions about recorded monitoring data.
-- Helping fleet owners interpret historical safety metrics.
-
-Install Ollama separately and download a compatible model. For example:
-
-```bash
-ollama pull gemma3
-ollama run gemma3
-```
-
-The commands above demonstrate how to download and run a model; they do not, by themselves, integrate it into this project.
-
-To complete the integration, the application will need an appropriate backend service that calls Ollama, API endpoints for chatbot requests, and a frontend chat interface. Any answers based on fleet records should use actual stored data rather than fabricated model responses.
-
-Model availability, RAM requirements, and response speed depend on the chosen model and hardware.
-
-## 13. Configuration and Security
-
-- Never commit `.env` files, API keys, OAuth credentials, JWT secrets, or access tokens.
-- Use `.env.example` for placeholder configuration values.
-- Do not upload real driver records or sensitive event logs to a public repository.
-- Keep downloaded model weights and large datasets outside Git unless there is a specific reason to distribute them.
-- Configure the backend and frontend endpoints for the local machine before testing.
-- Use authentication and authorization before exposing owner dashboard data outside a local development environment.
-
-## 14. Troubleshooting
-
-**Camera does not open**
-- Check Windows camera permissions.
-- Close applications using the webcam.
-- Verify the camera index and OpenCV installation.
-
-**YOLO model not found**
-- Download the required weights and check the path expected by the detection code.
-
-**FastAPI import error**
-- Activate the correct virtual environment.
-- Install the dependencies.
-- Check the module path and imports.
-
-**Dashboard cannot reach the backend**
-- Start the backend.
-- Check API and WebSocket URLs.
-- Inspect browser developer tools and backend terminal logs.
-
-**Ollama connection error**
-- Install and start Ollama.
-- Confirm the model is downloaded.
-- Check the configured model name and local API endpoint.
-
-**Missing Python or npm packages**
-- Install the relevant requirements or run `npm install` inside `owner_dashboard`.
-
-## 15. Current Development Goals
-
-1. Verify that each detection module works correctly with the webcam.
-2. Improve detection stability and reduce false positives.
-3. Verify that safety events reach the FastAPI backend.
-4. Connect dashboard pages to live backend data.
-5. Validate driver and vehicle reports and PDF generation.
-6. Integrate Ollama/Gemma through a backend chatbot service.
-7. Test the complete workflow on a clean computer.
-
-## 16. Contributing
-
-To contribute:
-
-1. Clone the repository.
-2. Create a separate Git branch for your changes.
-3. Install the required dependencies.
-4. Implement and test your changes locally.
-5. Commit your changes and push the branch.
-6. Open a pull request for review.
+1. **Driver Monitoring Service (`driver_service`):** Runs on the driver's vehicle edge device/laptop. Monitors the driver via webcam or video, calculates geometric Eye Aspect Ratio (EAR) and Mouth Aspect Ratio (MAR) with MediaPipe Face Mesh, detects phone distractions with YOLOv8, detects head-down/lay-down postures, sounds immediate local audio alarms independently of the network, and queues telemetry to the owner service via a non-blocking background retry queue.
+2. **Owner Management Service (`owner_service`):** Runs on the fleet administrator's server or workstation. Implemented with **FastAPI + MongoDB (PyMongo) + React (Vite) + local Gemma via Ollama**. Persists fleet drivers, drowsiness events, and AI analyses in MongoDB, broadcasts live alerts over WebSockets, and delivers structured advisory risk explanations using local Gemma.
 
 ---
 
-**Project:** AI Driver Drowsiness & Behaviour Safety Monitoring System  
-**Purpose:** Driver safety monitoring and fleet-owner reporting  
-**Status:** Development and integration in progress
+## 1. Project Architecture
+
+```text
+Driver-Drowsiness-Safety-Monitoring/
+│
+├── driver_service/              # Service 1: Edge Driver Monitoring
+│   ├── main.py                  # Driver service single-command entry point
+│   ├── camera/                  # Webcam capture & video file fallback
+│   ├── detection/               # FaceMesh, EAR/MAR fatigue, phone & posture detectors
+│   ├── monitoring/              # Event lifecycle, state transitions, session manager
+│   ├── alerts/                  # Local Pygame alarm & winsound fallback (100% offline)
+│   ├── models/                  # Driver-side event schemas
+│   ├── utils/                   # HUD visualizer, logger & async retry API client
+│   ├── config/                  # Settings and .env threshold configuration
+│   ├── assets/                  # Local alarm sound (alarm.mp3) & YOLO weights (yolov8n.pt)
+│   ├── tests/                   # Automated unit test suite (16 tests)
+│   ├── requirements.txt         # Driver service Python dependencies
+│   └── README.md                # Driver service documentation
+│
+├── owner_service/               # Service 2: Fleet Management Platform
+│   ├── backend/                 # FastAPI REST API & WebSocket server
+│   │   ├── main.py              # Backend entry point
+│   │   ├── routes/              # /api/health, /api/drivers, /api/events, /api/ai endpoints
+│   │   ├── models/              # Pydantic request/response schemas
+│   │   ├── services/            # EventService coordinating persistence & AI analysis
+│   │   ├── database.py          # MongoDB persistence layer via PyMongo
+│   │   ├── websocket.py         # Real-time WebSocket manager (/ws/events, /ws)
+│   │   ├── tests/               # Backend test suite (10 unit & integration tests)
+│   │   └── requirements.txt     # Backend Python dependencies
+│   ├── frontend/                # React (Vite) Owner Dashboard
+│   │   ├── src/                 # Components, pages, WebSocket consumer, dataService
+│   │   ├── package.json         # Frontend Node.js dependencies
+│   │   └── vite.config.js       # Vite build & proxy configuration
+│   ├── ai/                      # Local AI Explanation Engine
+│   │   └── gemma_service.py     # Ollama / Gemma integration (model: gemma4:e4b)
+│   └── README.md                # Owner service documentation
+│
+├── shared/                      # Shared Contracts
+│   └── event_schema.py          # Canonical SafetyEvent definition & status classifier
+│
+├── data/                        # Persistent buffers (Git-ignored)
+│   └── events.json              # Local JSON buffer
+│
+├── .env.example                 # Environment configuration template
+├── requirements.txt             # Root requirements pointing to both services
+└── README.md                    # System documentation (this file)
+```
+
+---
+
+## 2. Environment Setup (Windows PowerShell)
+
+### Step 1: Start MongoDB
+Ensure MongoDB Server is running on port 27017:
+```powershell
+# Check MongoDB Windows Service status
+Get-Service MongoDB
+
+# Start MongoDB service if stopped:
+Start-Service MongoDB
+
+# Or run mongod directly:
+mongod --dbpath="C:\data\db"
+```
+- MongoDB URI: `mongodb://127.0.0.1:27017`
+- Database Name: `driver_safety_db`
+- Collections: `drivers`, `drowsiness_events`, `ai_analyses`
+
+### Step 2: Start Local Ollama with Gemma
+1. Open PowerShell and verify Ollama is installed:
+```powershell
+ollama list
+```
+*(The local installation includes `gemma4:e4b` or models like `gemma:2b`)*.
+2. Start the Ollama background daemon:
+```powershell
+ollama serve
+```
+
+### Step 3: Install Python Dependencies
+```powershell
+# Backend Dependencies (Python 3.10 / 3.11)
+pip install -r owner_service/backend/requirements.txt
+
+# Driver Service Dependencies (Python 3.11 / 3.12)
+pip install -r driver_service/requirements.txt
+```
+
+---
+
+## 3. Running the Owner Management Service
+
+### Step 1: Start the FastAPI Owner Backend
+In a PowerShell terminal:
+```powershell
+python -m uvicorn owner_service.backend.main:app --host 127.0.0.1 --port 8000 --reload
+```
+- Swagger API Docs: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+- Health Check: [http://127.0.0.1:8000/api/health](http://127.0.0.1:8000/api/health)
+
+### Step 2: Start the React Dashboard
+In a **second PowerShell terminal**:
+```powershell
+cd owner_service/frontend
+npm install
+npm run dev
+```
+- Open in browser: [http://localhost:5173](http://localhost:5173)
+
+---
+
+## 4. Running the Driver Monitoring Service
+
+In a **third PowerShell terminal**:
+```powershell
+python driver_service/main.py
+```
+- Press **`q`** in the video display window to stop and view the session summary.
+- The driver service runs **completely offline**: the local Pygame audio alarm triggers immediately on eye closure without waiting for any network response or LLM inference.
+- Events are transmitted in the background via a non-blocking queue to `http://127.0.0.1:8000/api/events`.
+
+---
+
+## 5. API Endpoints Reference
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/health` | Health of the backend, MongoDB connection status (with version), and Ollama/Gemma availability. |
+| `GET` | `/api/drivers` | Driver fleet list, vehicle assignments, alert status, and event counters. |
+| `POST` | `/api/events` | Validates incoming driver events, persists them to MongoDB, and broadcasts over WebSockets. |
+| `GET` | `/api/events` | Persisted events with pagination (`limit`, `skip`) and filters (`driver_id`, `severity`, `event_type`). |
+| `GET` | `/api/events/{event_id}` | Retrieves a single event and its quantitative telemetry by ID. |
+| `POST` | `/api/ai/analyze` | Triggers structured Gemma analysis on a stored event via Ollama. |
+| `GET` | `/api/ai/analyses` | Retrieves stored Gemma analyses from MongoDB `ai_analyses`. |
+| `GET` | `/api/ai/status` | Current Ollama connection status and installed local model tags. |
+| `WS` | `/ws/events` | Real-time WebSocket event broadcast to connected dashboard clients. |
+| `WS` | `/ws` | WebSocket endpoint alias. |
+
+---
+
+## 6. Running Automated Tests
+
+### Owner Backend Tests (MongoDB, REST APIs, WebSockets, Ollama Error Handling)
+```powershell
+pytest owner_service/backend/tests -v
+```
+*(All 10 unit and integration tests execute with in-memory `mongomock` or live MongoDB)*.
+
+### Driver Monitoring Service Tests (Computer Vision, EAR, Cooldowns, Alarms)
+```powershell
+pytest driver_service/tests -v
+```
+*(All 16 unit tests validate detection logic, geometry, posture, and alarms)*.
